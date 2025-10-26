@@ -12,7 +12,7 @@ My environment:
 
 - Intel 1250U, NVME SSD, 32 Gb
 - Ubuntu 22.04 under WSL2 (Windows 11)
-- On battery in `Most power efficiency mode`
+- On battery in `Best Power Efficiency` mode
 - Go 1.25.3
 
 In profiler I normally looked at top 5 `go tool pprof profiler` then `top5`
