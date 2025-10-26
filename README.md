@@ -2,11 +2,11 @@
 
 ## Why
 
-I am quite late to the party, pretty much everyone already solved this in all languages. But for me this is just one opportunity to get a bit deeper Go knowledge.
+I am quite late to the party, pretty much everyone already solved this in all programming languages. But for me this is just one more opportunity to dig a bit deeper into Go.
 
 ## How
 
-Going to create a very basic implementation. Then using data from the profiler to address slowest parts of the code until I get good enough result on my machine.
+Create a very basic initial implementation. Then using data from the profiler to address slowest parts of the code until I get good enough result on my machine.
 
 My environment:
 
@@ -96,4 +96,31 @@ Showing top 5 nodes out of 67
     16.28s  5.58% 20.47%     16.28s  5.58%  aeshashbody
     15.29s  5.24% 25.71%     15.29s  5.24%  runtime.nextFreeFast (inline)
     14.65s  5.02% 30.73%    101.98s 34.94%  bytes.genSplit
+```
+
+### Implementation 3
+
+Just some tweaks around read chunk size and number of parallel chunk processing threads. Seems like reading data in 16 MB chunks and processing them in the number of threads that equal number of CPU cores (including HT) provides best performance.
+
+```
+real    0m37.126s
+user    6m38.807s
+sys     0m15.234s
+```
+
+profiler
+
+```
+Duration: 36.61s, Total samples = 411.65s (1124.39%)
+Entering interactive mode (type "help" for commands, "o" for options)
+(pprof) top5
+Showing nodes accounting for 121.50s, 29.52% of 411.65s total
+Dropped 315 nodes (cum <= 2.06s)
+Showing top 5 nodes out of 62
+      flat  flat%   sum%        cum   cum%
+    29.39s  7.14%  7.14%     97.93s 23.79%  runtime.mapaccess2_faststr
+    25.18s  6.12% 13.26%     25.18s  6.12%  aeshashbody
+    23.11s  5.61% 18.87%     23.24s  5.65%  main.parseFloatCustom
+    22.68s  5.51% 24.38%    138.50s 33.65%  bytes.genSplit
+    21.14s  5.14% 29.52%     21.14s  5.14%  internal/runtime/maps.ctrlGroup.matchH2 (inline)
 ```

@@ -6,6 +6,7 @@ import (
 	"io"
 	"math"
 	"os"
+	"runtime"
 	"runtime/pprof"
 	"sync"
 )
@@ -161,9 +162,9 @@ func main() {
 	pprof.StartCPUProfile(f)
 	defer pprof.StopCPUProfile()
 
-	chunkSize := 64 * 1024 * 1024
+	chunkSize := 16 * 1024 * 1024
 
-	sem := make(chan int, 4)
+	sem := make(chan int, runtime.NumCPU())
 
 	measurements := make(map[string]measurement)
 
