@@ -7,7 +7,6 @@ import (
 	"math"
 	"os"
 	"runtime/pprof"
-	"strconv"
 	"sync"
 )
 
@@ -62,6 +61,35 @@ func checkAndUpdateMeasurements(mu *sync.Mutex, measurements map[string]measurem
 var newLineByte = []byte("\n")
 var separator = []byte(";")
 
+func parseFloatCustom(buffer []byte) float64 {
+	index := 0
+	isNegative := false
+	var parsedValue float64
+
+	if buffer[index] == '-' {
+		isNegative = true
+		index++
+	}
+
+	parsedValue = float64(buffer[index] - '0')
+	index++
+
+	if buffer[index] == '.' {
+		index++
+	} else {
+		parsedValue = parsedValue*10 + float64(buffer[index]-'0')
+		index++
+	}
+
+	// only one decimal digit
+	parsedValue += float64(buffer[index]-'0') / 10
+
+	if isNegative {
+		parsedValue = -parsedValue
+	}
+	return parsedValue
+}
+
 func processChunk(variant int, sem chan int, wg *sync.WaitGroup, mu *sync.Mutex, buffer []byte, lastIndex int, measurements map[string]measurement) {
 	defer wg.Done()
 	defer func() { <-sem }()
@@ -91,12 +119,7 @@ func processChunk(variant int, sem chan int, wg *sync.WaitGroup, mu *sync.Mutex,
 				break
 			}
 
-			parsedValue, err := strconv.ParseFloat(string(parts[1]), 64)
-
-			if err != nil {
-				fmt.Printf("failed to parse %s to float, %v", parts[1], err)
-				panic("failed to parse float")
-			}
+			parsedValue := parseFloatCustom(parts[1])
 
 			key := string(parts[0])
 			value, isPresent := tmpMeasurements[key]

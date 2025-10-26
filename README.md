@@ -70,3 +70,30 @@ Showing top 5 nodes out of 67
 ```
 
 Next step is to improve parsing float.
+
+### Implementation 2
+
+Replaced `ParseFloat` with custom impl. Runtime is down to 75 seconds, but custom parsing float is still the slowest operation
+
+```
+real    1m16.288s
+user    4m42.292s
+sys     0m23.970s
+```
+
+profiler
+
+```
+Duration: 75.31s, Total samples = 291.89s (387.58%)
+Entering interactive mode (type "help" for commands, "o" for options)
+(pprof) top5
+Showing nodes accounting for 89.70s, 30.73% of 291.89s total
+Dropped 273 nodes (cum <= 1.46s)
+Showing top 5 nodes out of 67
+      flat  flat%   sum%        cum   cum%
+    25.17s  8.62%  8.62%     25.19s  8.63%  main.parseFloatCustom
+    18.31s  6.27% 14.90%     61.84s 21.19%  runtime.mapaccess2_faststr
+    16.28s  5.58% 20.47%     16.28s  5.58%  aeshashbody
+    15.29s  5.24% 25.71%     15.29s  5.24%  runtime.nextFreeFast (inline)
+    14.65s  5.02% 30.73%    101.98s 34.94%  bytes.genSplit
+```
